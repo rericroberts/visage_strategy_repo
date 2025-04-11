@@ -1,2 +1,26 @@
 # config.yaml
 # (Content will be restored in full from Canvas)
+credentials:
+  usernames:
+    eric:
+      email: reric.ml@gmail.com
+      name: Eric
+      password: '$2b$12$kP/fnbXJe7JwP3DGaKREX.QhK7eVnx3.cYyODVsAAgeB1lQAFjUjK'  # eric123
+    daryllynn:
+      email: darylynn@visageenergy.com
+      name: Daryl-Lynn
+      password: '$2b$12$BOVLwEdnGu1vMgHaWxqVGu1tEopq4cQ0QeT.1F93A2rGVB2DN7WVS'  # daryllynn123
+    will:
+      email: will@visageenergy.com
+      name: Will
+      password: '$2b$12$eI5LHYIcGwkp/edN5hT5meNLniD/z7sCKAZqaXABm8QWbT0rUPlLG'  # will123
+    carter:
+      email: carter.blake.roberts@gmail.com
+      name: Carter
+      password: '$2b$12$71kOgP3cMg3msn4TLNLv7uW84zNWr.SYtRSpPXvZwpm4Um2KAMsAm'  # carter123
+
+
+cookie:
+  expiry_days: 3
+  key: super_secure_visage_cookie_2024
+  name: visage_cookie
