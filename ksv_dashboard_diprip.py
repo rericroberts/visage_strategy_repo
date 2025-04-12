@@ -19,6 +19,7 @@ authenticator = stauth.Authenticate(
     config['cookie']['expiry_days']
 )
 
+# Force redeploy - confirmed correct login line
 
 name, authentication_status, username = authenticator.login(location="main")
 
