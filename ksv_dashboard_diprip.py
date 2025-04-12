@@ -21,7 +21,8 @@ authenticator = stauth.Authenticate(
 
 # Force redeploy - confirmed correct login line
 
-name, authentication_status, username = authenticator.login(location="main")
+name, authentication_status, username = authenticator.login("Login", "main")
+
 
 
 if authentication_status:
