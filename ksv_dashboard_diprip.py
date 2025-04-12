@@ -1,5 +1,7 @@
 # Trigger update from Notepad
 
+
+#---------------------------------------------------------------------------------------------
 import streamlit as st
 import yaml
 import pandas as pd
@@ -19,19 +21,17 @@ authenticator = stauth.Authenticate(
     config['cookie']['expiry_days']
 )
 
-# Force redeploy - confirmed correct login line
+# Call login UI
+authenticator.login(location="main")
 
-
-name, authentication_status, username = authenticator.login(location="main")
-
-
-
-if authentication_status:
-    authenticator.logout("Logout", "sidebar")
+# Check login status
+if authenticator.authentication_status:
     st.set_page_config(page_title="KSV Strategy Dashboard", layout="wide")
     st.title("📊 Visage Strategy Dashboard")
 
-    st.success(f"Welcome back, {name}!")
+    st.success(f"Welcome back, {authenticator.name}!")
+
+    authenticator.logout("Logout", "sidebar")
 
     # Placeholder for loading and visualizing strategy results
     file_path = "ksv_strategy_results.csv"
@@ -44,8 +44,9 @@ if authentication_status:
     else:
         st.warning("Strategy results file not found. Please push results from model first.")
 
-elif authentication_status is False:
+elif authenticator.authentication_status is False:
     st.error("Incorrect username or password")
 
-elif authentication_status is None:
+elif authenticator.authentication_status is None:
     st.warning("Please enter your credentials to continue")
+
