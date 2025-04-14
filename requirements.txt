@@ -5,4 +5,5 @@ pandas
 matplotlib
 scipy
 PyYAML
-streamlit-authenticator
+streamlit-authenticator==0.4.2
+
