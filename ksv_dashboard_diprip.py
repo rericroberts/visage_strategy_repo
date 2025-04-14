@@ -20,10 +20,10 @@ authenticator = stauth.Authenticate(
 )
 
 # Attempt login with explicit label + location
-name, authentication_status, username = authenticator.login(
-    label="Login",
-    location="main"
-)
+
+name, authentication_status, username = authenticator.login("main")
+
+
 
 if authentication_status == True:
     # Logged in successfully
