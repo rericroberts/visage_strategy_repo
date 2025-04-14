@@ -21,8 +21,15 @@ authenticator = stauth.Authenticate(
 
 # Attempt login with explicit label + location
 
-name, authentication_status, username = authenticator.login("main")
 
+
+login_result = authenticator.login("main")
+
+if login_result:
+    name, authentication_status, username = login_result
+else:
+    st.warning("Please enter your credentials to continue")
+    st.stop()
 
 
 if authentication_status == True:
