@@ -9,6 +9,9 @@ import os
 with open("auth_config.yaml") as file:
     config = yaml.safe_load(file)
 
+# 🔍 DEBUG: Show parsed YAML config
+st.write("🔐 Parsed Credentials:", config)
+
 import streamlit_authenticator as stauth
 
 # Initialize authenticator
@@ -19,11 +22,11 @@ authenticator = stauth.Authenticate(
     config['cookie']['expiry_days']
 )
 
-# Attempt login with explicit label + location
-
-
-
+# Attempt login with explicit location
 login_result = authenticator.login("main")
+
+# 🔍 DEBUG: Show raw login result
+st.write("🧪 Login Result (raw):", login_result)
 
 if login_result:
     name, authentication_status, username = login_result
@@ -31,6 +34,9 @@ else:
     st.warning("Please enter your credentials to continue")
     st.stop()
 
+# 🔍 DEBUG: Echo login status
+st.write("✅ Authenticated:", authentication_status)
+st.write("👤 User:", username)
 
 if authentication_status == True:
     # Logged in successfully
@@ -58,4 +64,20 @@ elif authentication_status == False:
 elif authentication_status == None:
     # Haven't entered credentials yet
     st.warning("Please enter your credentials to continue")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
