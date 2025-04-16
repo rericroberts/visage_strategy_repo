@@ -1,4 +1,4 @@
-# # Trigger update from Notepad test fix 
+# Trigger update from Notepad test fix
 
 import streamlit as st
 import yaml
@@ -21,16 +21,25 @@ st.write("🔐 Parsed Credentials:", config)
 import streamlit_authenticator as stauth
 
 # Initialize authenticator
-authenticator = stauth.Authenticate(
-    config['credentials'],
-    config['cookie']['name'],
-    config['cookie']['key'],
-    config['cookie']['expiry_days']
-)
-
-# ✅ Try login with full diagnostics
 try:
+    authenticator = stauth.Authenticate(
+        config['credentials'],
+        config['cookie']['name'],
+        config['cookie']['key'],
+        config['cookie']['expiry_days']
+    )
+except Exception as e:
+    st.error("🚨 Failed to initialize authenticator.")
+    st.text(traceback.format_exc())
+    st.stop()
+
+# Render login interface
+st.header("🔐 Please Log In to Continue")
+
+try:
+    st.write("🟡 Calling `authenticator.login('main')`...")
     login_result = authenticator.login("main")
+
     st.write("🧪 Login result object:", login_result)
 
     if login_result is not None:
@@ -38,7 +47,7 @@ try:
         st.write("✅ Authenticated:", authentication_status)
         st.write("👤 User:", username)
     else:
-        st.warning("Login returned NoneType. No input detected yet.")
+        st.info("📥 Waiting for user input...")
         st.stop()
 
 except Exception as e:
@@ -46,7 +55,7 @@ except Exception as e:
     st.text(traceback.format_exc())
     st.stop()
 
-# 🔐 Authenticated block
+# After login result is parsed
 if authentication_status == True:
     st.set_page_config(page_title="KSV Strategy Dashboard", layout="wide")
     st.title("📊 Visage Strategy Dashboard")
@@ -65,21 +74,7 @@ if authentication_status == True:
         st.warning("Strategy results file not found. Please push results from model first.")
 
 elif authentication_status == False:
-    st.error("Incorrect username or password")
+    st.error("❌ Incorrect username or password")
 
 elif authentication_status is None:
     st.warning("Please enter your credentials to continue")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
