@@ -1,11 +1,17 @@
-# Trigger update from Notepad test fix 
+# # Trigger update from Notepad test fix 
 
 import streamlit as st
 import yaml
 import pandas as pd
 import os
+import traceback
 
-# Load credentials
+# Load credentials safely
+if not os.path.exists("auth_config.yaml"):
+    st.error("🚨 auth_config.yaml not found in the current working directory.")
+    st.write("📁 Working Directory:", os.getcwd())
+    st.stop()
+
 with open("auth_config.yaml") as file:
     config = yaml.safe_load(file)
 
@@ -22,31 +28,32 @@ authenticator = stauth.Authenticate(
     config['cookie']['expiry_days']
 )
 
-# Attempt login with explicit location
-login_result = authenticator.login("main")
+# ✅ Try login with full diagnostics
+try:
+    login_result = authenticator.login("main")
+    st.write("🧪 Login result object:", login_result)
 
-# 🔍 DEBUG: Show raw login result
-st.write("🧪 Login Result (raw):", login_result)
+    if login_result is not None:
+        name, authentication_status, username = login_result
+        st.write("✅ Authenticated:", authentication_status)
+        st.write("👤 User:", username)
+    else:
+        st.warning("Login returned NoneType. No input detected yet.")
+        st.stop()
 
-if login_result:
-    name, authentication_status, username = login_result
-else:
-    st.warning("Please enter your credentials to continue")
+except Exception as e:
+    st.error(f"🚨 Login block raised an exception: {e}")
+    st.text(traceback.format_exc())
     st.stop()
 
-# 🔍 DEBUG: Echo login status
-st.write("✅ Authenticated:", authentication_status)
-st.write("👤 User:", username)
-
+# 🔐 Authenticated block
 if authentication_status == True:
-    # Logged in successfully
     st.set_page_config(page_title="KSV Strategy Dashboard", layout="wide")
     st.title("📊 Visage Strategy Dashboard")
     st.success(f"Welcome back, {name}!")
 
     authenticator.logout("Logout", "sidebar")
 
-    # Placeholder for loading and visualizing strategy results
     file_path = "ksv_strategy_results.csv"
     if os.path.exists(file_path):
         df = pd.read_csv(file_path)
@@ -58,15 +65,10 @@ if authentication_status == True:
         st.warning("Strategy results file not found. Please push results from model first.")
 
 elif authentication_status == False:
-    # Wrong password
     st.error("Incorrect username or password")
 
-elif authentication_status == None:
-    # Haven't entered credentials yet
+elif authentication_status is None:
     st.warning("Please enter your credentials to continue")
-
-
-
 
 
 
