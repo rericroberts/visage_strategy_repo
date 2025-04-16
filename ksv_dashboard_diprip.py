@@ -7,6 +7,15 @@ import os
 import traceback
 import streamlit_authenticator as stauth
 
+# ✅ Final login version for Streamlit Cloud
+
+import streamlit as st
+import yaml
+import pandas as pd
+import os
+import traceback
+import streamlit_authenticator as stauth
+
 # Load credentials safely
 if not os.path.exists("auth_config.yaml"):
     st.error("🚨 auth_config.yaml not found in the current working directory.")
@@ -23,29 +32,26 @@ try:
         config['cookie']['key'],
         config['cookie']['expiry_days']
     )
-except Exception:
+except Exception as e:
     st.error("🚨 Failed to initialize authenticator.")
+    st.text(traceback.format_exc())
     st.stop()
 
 # Render login interface
 st.header("🔐 Please Log In to Continue")
 
 try:
-    authenticator.login(location="main")
-
-    if authenticator.authentication_status is None:
-        st.stop()
-
+    name, authentication_status, username = authenticator.login("main")
 except Exception as e:
     st.error("🚨 Login process failed.")
     st.text(traceback.format_exc())
     st.stop()
 
-# Post-login dashboard
-if authenticator.authentication_status:
+# Post-login behavior
+if authentication_status == True:
     st.set_page_config(page_title="KSV Strategy Dashboard", layout="wide")
     st.title("📊 Visage Strategy Dashboard")
-    st.success(f"Welcome back, {authenticator.name}!")
+    st.success(f"Welcome back, {name}!")
 
     authenticator.logout("Logout", "sidebar")
 
@@ -59,7 +65,8 @@ if authenticator.authentication_status:
     else:
         st.warning("Strategy results file not found. Please push results from model first.")
 
-elif authenticator.authentication_status is False:
+elif authentication_status == False:
     st.error("❌ Incorrect username or password")
 
-
+elif authentication_status is None:
+    st.warning("Please enter your credentials to continue")
