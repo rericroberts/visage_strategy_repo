@@ -37,16 +37,14 @@ except Exception as e:
 st.header("🔐 Please Log In to Continue")
 
 try:
-    st.write("🟡 Calling `authenticator.login('main')`...")
-    login_result = authenticator.login("main")
+    st.write("🟡 Calling `authenticator.login(location='main')`...")
+    authenticator.login(location="main")  # ⚠️ No unpacking anymore
 
-    st.write("🧪 Login result object:", login_result)
+    # 🔍 Get status from attributes
+    st.write("🧪 Auth Status:", authenticator.authentication_status)
+    st.write("👤 Username:", authenticator.username)
 
-    if login_result is not None:
-        name, authentication_status, username = login_result
-        st.write("✅ Authenticated:", authentication_status)
-        st.write("👤 User:", username)
-    else:
+    if authenticator.authentication_status is None:
         st.info("📥 Waiting for user input...")
         st.stop()
 
@@ -56,10 +54,10 @@ except Exception as e:
     st.stop()
 
 # After login result is parsed
-if authentication_status == True:
+if authenticator.authentication_status == True:
     st.set_page_config(page_title="KSV Strategy Dashboard", layout="wide")
     st.title("📊 Visage Strategy Dashboard")
-    st.success(f"Welcome back, {name}!")
+    st.success(f"Welcome back, {authenticator.name}!")
 
     authenticator.logout("Logout", "sidebar")
 
@@ -73,8 +71,9 @@ if authentication_status == True:
     else:
         st.warning("Strategy results file not found. Please push results from model first.")
 
-elif authentication_status == False:
+elif authenticator.authentication_status == False:
     st.error("❌ Incorrect username or password")
 
-elif authentication_status is None:
+elif authenticator.authentication_status is None:
     st.warning("Please enter your credentials to continue")
+
