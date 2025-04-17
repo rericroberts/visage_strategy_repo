@@ -1,13 +1,4 @@
-# Trigger update from Notepad final cleanup
-
-import streamlit as st
-import yaml
-import pandas as pd
-import os
-import traceback
-import streamlit_authenticator as stauth
-
-# ✅ Final login version for Streamlit Cloud
+# Trigger update from Notepad test fix
 
 import streamlit as st
 import yaml
@@ -19,6 +10,7 @@ import streamlit_authenticator as stauth
 # Load credentials safely
 if not os.path.exists("auth_config.yaml"):
     st.error("🚨 auth_config.yaml not found in the current working directory.")
+    st.write("📁 Working Directory:", os.getcwd())
     st.stop()
 
 with open("auth_config.yaml") as file:
@@ -42,13 +34,15 @@ st.header("🔐 Please Log In to Continue")
 
 try:
     name, authentication_status, username = authenticator.login("main")
+    st.write("✅ Authenticated:", authentication_status)
+    st.write("👤 Username:", username)
 except Exception as e:
     st.error("🚨 Login process failed.")
     st.text(traceback.format_exc())
     st.stop()
 
 # Post-login behavior
-if authentication_status == True:
+if authentication_status:
     st.set_page_config(page_title="KSV Strategy Dashboard", layout="wide")
     st.title("📊 Visage Strategy Dashboard")
     st.success(f"Welcome back, {name}!")
@@ -65,8 +59,9 @@ if authentication_status == True:
     else:
         st.warning("Strategy results file not found. Please push results from model first.")
 
-elif authentication_status == False:
+elif authentication_status is False:
     st.error("❌ Incorrect username or password")
 
 elif authentication_status is None:
     st.warning("Please enter your credentials to continue")
+
